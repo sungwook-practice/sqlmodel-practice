@@ -1,5 +1,5 @@
 from typing import Optional
-from sqlmodel import Field, Session, SQLModel, create_engine
+from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 class Hero(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -35,6 +35,17 @@ def create_heroes():
         print("Hero 2 name:", hero_2.name)
         print("Hero 3 name:", hero_3.name)
 
+def select_heroes():
+    with Session(engine) as session:
+        statement = select(Hero)
+        results = session.exec(statement)
+        # heroes = results.all()
+        # print(heroes)
+
+        for hero in results:
+            print(hero)
+
+
 sqlite_file_name = "sample.db"
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 engine = create_engine(sqlite_url, echo=True)
@@ -44,4 +55,5 @@ def create_db_and_tables():  #
 
 if __name__ == "__main__":  #
     create_db_and_tables()
-    create_heroes()
+    # create_heroes()
+    select_heroes()
